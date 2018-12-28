@@ -1,0 +1,27 @@
+baseurl: /UrbanScientist
+title: Urban Scientist
+subtitle: Urban Economics, Computational Econometrics & Data Science Curiosities
+author: Jeremy A. Seibert
+simple_search: http://google.com/search
+description: The Urbanist Scientist's guide to the curiosities of Mathematic's, Machines and Economic's.
+name: Urban Scientist
+markdown: kramdown
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+permalink: /articles/:short_year/:title
+timezone: America/Chicago
+excerpt_separator: <!--more-->  # you can specify your own separator, of course.
+exclude: ['Gemfile', 'Gemfile.lock', 'Rakefile', 'UploadToGithub.Rakefile', 'README.md']
+post:
+  template: _post.txt
+  extension: md
+page:
+  template: _page.txt
+  extension: md
+editor: gvim
+git:
+  branch: master
+transfer:
+  command: rsync
+  settings: -av
+  source: _site/
+  destination: ~/Git/UrbanScientist #Site Address

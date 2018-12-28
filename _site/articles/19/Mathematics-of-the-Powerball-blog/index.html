@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>A Mathematical Understanding of the Powerball Lottery</title>
+  <meta name="description" content="The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative...">
+
+  <!-- Google Fonts loaded here depending on setting in _data/options.yml true loads font, blank does not-->
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+  
+
+  <!-- Load up MathJax script if needed ... specify in /_data/options.yml file-->
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  
+  <link rel="stylesheet" type="text/css" href="/UrbanScientist/css/tufte.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/UrbanScientist/css/print.css" media="print"> -->
+
+  <link rel="canonical" href="/UrbanScientist/articles/19/Mathematics-of-the-Powerball-blog">
+
+  <link rel="alternate" type="application/rss+xml" title="Urban Scientist" href="/UrbanScientist/feed.xml" />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <nav class="group">
+	<a href="/UrbanScientist/"><img class="badge" src="/UrbanScientist/assets/img/Full_Logo.png" alt="CH"></a>
+	
+		
+  	
+		
+		    
+		      <a href="/UrbanScientist/index.html">Articles</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/UrbanScientist/about/index.html">About</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/UrbanScientist/css/print.css"></a>
+		    
+	    
+  	
+		
+  	
+	</nav>
+</header>
+
+    <article class="group">
+      <h1>A Mathematical Understanding of the Powerball Lottery</h1>
+<p class="subtitle">December 27, 2019</p>
+
+<p>The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative adjustments in the game’s structure. The most recent adjustment being set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own <label for="One" class="margin-toggle sidenote-number"></label><input type="checkbox" id="One" class="margin-toggle" /><span class="sidenote">I will be using Python 3.7 for this project. Access the associated <a href="https:address">Jupyter Notebook</a> for the project here. </span></p>
+
+<h2 id="brief-history-of-the-powerball-lottery-game">Brief History of the Powerball Lottery Game</h2>
+
+<p>Formed in a collaborative effort between the Multi-State Lottery Association (MUSL), a nonprofit organization and an agreement with the other US lotteries, the Powerball came to fruition. The Powerball Lottery is a Multi-State lottery game offered to play across 44 States in the US. With the efforts of the MUSL the first Powerball drawing was held in 1992. Powerball became the first lottery game to use two different pools of balls that the winning numbers were selected from. This was especially important because using the two different pools offered more variation by simultaneously allowing high jackpot odds, along with numerous prize levels and lower overall odds of winning.</p>
+
+<h2 id="the-game-structure">The Game Structure</h2>
+
+<p>For those who are not familiar with how to play the Powerball lottery, the game structure is very simple. There is one player who chooses numbers from two different pools. One can think of a pool as consisting of a range from 1 to <em>N</em>, where the range implies that for every integer <em>x</em> within it is greater than or equal to 1, and less than or equal to <em>N</em>.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display"> Pool = {[1,N] \implies \{ x \in \mathbb{Z} :  1  \leq  x  \leq  N\}}</script></div>
+
+<p>The players can select their matrix of numbers by using the “Quick Pick” option, which allows a machine to choose random values for their ticket, or the players can create their own selection matrix on a card which is ran through the system manually.</p>
+
+<h2 id="powerball-ticket-combinations">Powerball Ticket Combinations</h2>
+
+<p>For the first pool, or the white balls in the Powerball, <em>N</em> = 69 making the range of possible selections a range from 1 to 69. The player must select five different numbers from the first pool.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display"> First Pool = {[1,69] \implies \{ x \in \mathbb{Z} :  1  \leq  x  \leq  69\}}</script></div>
+
+<p>These five numbers, regardless of their order, must match the five numbers drawn from the <em>FirstPool</em> by the lottery in order for a chance to win. This type of combination is considered a <em>combination without replacement</em>. This idea can be conceptualized in that when the first number is drawn it has a 1 in 69 possibility of matching a ball drawn in the lottery. With the second number there are now only 68 numbers left to draw from, because the numbers are chosen without replacement. Thus, there is now only a 1 in 68 possibility of selecting the matching number. Continuing this logic forward across all the five numbers necessary we arrive at, (1  in  69 x 68 x 67 x 66 x 65) possibilities.</p>
+
+<p>This same concept can be expressed using enumerative combinatorics. Combinatorics broadly is a branch of mathematics whose primary concern is the utilization of certain methodological processes as a means to count, and to extrapolate results from a finite set. When narrowing in on enumerative combinatorics we use the twelvefold way, a framework for counting permutations<label for="Two" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Two" class="margin-toggle" /><span class="sidenote"><em>Permutation</em>: An ordinal or sequential arrangement of the components of a set. </span>, combinations <label for="Three" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Three" class="margin-toggle" /><span class="sidenote"><em>Combination</em>: The arrangement of a set without reference to the order of the components. </span> and partitions. We will use this use this to define the range of possible combinations in the Powerball lottery.</p>
+
+<p>We can think of the range of possible numbers to be drawn as an immutable set <em>S</em> of integers whose bounds are defined in the aforementioned <em>FirstPool</em> definition. A k-combination is a finite portion of set <em>S</em> with <em>k</em> number of distinct elements. If the range of the set is known number <em>n</em> is the inclusive maximum element. For the Powerball’s <em>FirstPool</em> we can define <em>n</em> as equal to 69, and <em>k</em> as equal to 5. Acknowledging that factorials are computationally heavy, we will use them for simple explanation’s sake. Using previously defined <em>n</em>, and <em>k</em> within equation below we will arrive at the total number of combinations including permutations within the Powerball lottery.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display"> \frac{n!}{(n-k)!} </script></div>
+
+<p>The computational expression of the binomial coefficient calculation expresses the optionality to include or exclude permutations.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">factorial</span>
+
+<span class="k">def</span> <span class="nf">binomial_coefficient</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">perm</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calculates the Binomial Coefficient (n choose k)</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">    n = denotes the maximum value in a range from (1,n)</span>
+<span class="sd">    k = denotes the number of values selected from the n range</span>
+<span class="sd">    perm = denotes whether permutations are included</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">perm</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">binomial_coefficient</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">binomial_coefficient</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">factorial</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">binomial_coefficient</span></code></pre></div>
+
+<p>Using this function we can calculate that number of possible combinations and permutations in the <em>FirstPool</em> of the Powerball Lottery.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">binomial_coefficient</span><span class="p">(</span><span class="mi">69</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">perm</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></div>
+
+<p>This leads to <strong>1,348,621,560 combinations and permutations.</strong> Restating once more in order to win the Powerball the order of your selection of numbers is irrelevant, and thus we can eliminate the permutations. We eliminate the permutations by multiplying the denominator by <em>k!</em>. <label for="Five" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Five" class="margin-toggle" /><span class="sidenote">This is accomplished by default with the perm parameter of the binomial_coefficient function. </span>  We do this because given any set of <em>k</em> numbers there are <em>k!</em> number of ways that <em>k</em> could have been drawn. Thus, when we divide the 1,348,621,560 by <em>k!</em> we eliminate the effect of the permutations. <label for="Four" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Four" class="margin-toggle" /><span class="sidenote">This factorial expression of the k-combinatorial calculation in <em>Eq.2</em> is also equivalent to the binomial coefficient. Throughout the remainder of this article we will syntactically use the binomial coefficient notation  </span></p>
+
+<div class="mathblock"><script type="math/tex; mode=display">  \frac{n!}{k!(n-k)!} = \binom{n}{k}  </script></div>
+
+<p>Using this function we can calculate that number of possible combinations in the <em>FirstPool</em> of the Powerball Lottery.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">binomial_coefficient</span><span class="p">(</span><span class="mi">69</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span></code></pre></div>
+
+<p>This leads to <strong>11,238,513 combinations</strong> in the Powerball lottery’s first five numbers. The binomial coefficient can also be thought of as the collection of probabilities. When thinking about the Powerball, the probabilities associated with the first number would be 5 out of 69, the next being 4 out of 68, and so on until it renders the equation below.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{n \choose k}={69 \choose 5}={69 \over 5}* {68 \over 4} * {67 \over 3} * {66 \over 2} * {65 \over 1}</script></div>
+
+<p>When considering the Powerball, simply calculating the number of combinations across the first pool is not enough. There is a second pool where a red ball is drawn from. <label for="Five" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Five" class="margin-toggle" /><span class="sidenote">The red ball is the <strong>Powerball</strong> </span> The number of balls in the second pool is 26, making <em>N</em> = 26 with the range of possible selections being a range from 1 to 26. The player must select just one number from the second pool.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display"> Second Pool = {[1,26] \implies \{ x \in \mathbb{Z} :  1  \leq  x  \leq  26\}}</script></div>
+
+<p>In order to calculate the number of combinations including the second pool we modify the aforementioned probabilistic equation slightly.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{n \choose k}={69 \choose 5}={69 \over 5}* {68 \over 4} * {67 \over 3} * {66 \over 2} * {65 \over 1} * {26 \over 1}</script></div>
+
+<p>With this addition of the second pool the number of combinations increases to <strong>292,201,338</strong> possible combinations. We can refer to the span of all of the different combinations as the <em>number space</em>. The ratio of the number of the combinations in play for one drawing relative to the number space is denoted as the <em>coverage</em> in a lottery.</p>
+
+<h2 id="the-odds-of-winning">The Odds of Winning</h2>
+
+<p>Having discussed how to calculate the possible combinations in the Powerball, let us end by discussing the odds of winning. For now let us just consider the five white balls in the <em>Firstpool</em>, and we will discuss the inclusion of the Powerball momentarily. We start with the total number of combinations that are possible if all of the five white balls are selected.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{\binom{69}{5}} = 11,238,513 different combinations</script></div>
+
+<p>After that, we will define an expression that describes the odds of choosing <em>n</em> winning numbers out of the 5 possible winning white balls of the Powerball.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{5 \choose n}</script></div>
+
+<p>From this expression we can also think about the inverse of the odds of choosing <em>n</em> odds. They would imply that there are 5-n chances to choose a loosing number from the 69-k, or 64 losing numbers.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{69-k \choose 5-n} = {64 \choose 5-n}</script></div>
+
+<p>Taking both the odds of choosing <em>n</em> winning numbers multiplied by the odds of choosing <em>n</em> loosing numbers, divided by the odds of choosing all of the winning numbers, we arrive at the odds of choosing <em>n</em> correct numbers.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{5 \choose n}{64 \choose 5-n}\over {69 \choose 5}</script></div>
+
+<p>In our example it is used where <em>N</em> is the number of balls in a single pool, <em>K</em> is the number of balls in a selection from a single pool, and <em>B</em> is the number of matching balls on a single draw.<label for="Six" class="margin-toggle sidenote-number"></label><input type="checkbox" id="Six" class="margin-toggle" /><span class="sidenote">The generalized equation is known as the hypergeometric distribution. </span></p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{K \choose B}{N-K \choose K-B} \over {N \choose K}</script></div>
+
+<p>This equation would work perfectly except for one final caveat. That being that the Powerball Lottery has two pools which balls are selected from. Just as we did before the rectification of the equation to accommodate two pools is not difficult. Having only one ball selected from the pool, we can take the probability of it getting selected, multiplied across the numerator of the hypergeometric distribution. With this modification it alters the equation to allow for the selection of 1 ball out of pool <em>P</em>, along with the other aforementioned variables.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{1 \over P}{K \choose B}{N-K \choose K-B} \over {N \choose K}</script></div>
+
+<p>To calculate the the odds of selecting correctly from the <em>FirstPool</em>, but incorrectly from the <em>SecondPool</em>, we again modify the equation.</p>
+
+<div class="mathblock"><script type="math/tex; mode=display">{P - 1 \over P}{K \choose B}{N-K \choose K-B} \over {N \choose K}</script></div>
+
+<p>Computationally, we can derive each of the above equations using the powerball_odds function.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">powerball_odds</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">pmax</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calcluates the range of odds of drawing X correct balls in a non-powerball or one-powerball style lottery.</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">    n: The total number of balls in the lottery&#39;s drawing</span>
+<span class="sd">    k: The total number of balls that a player can draw out of the n pool</span>
+<span class="sd">    pmax:(optional): The maximum value if there is a powerball drawn from a seperate pool.        </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">odds_list_PB</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">odds_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">k</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">k</span><span class="o">-</span><span class="n">i</span>
+        <span class="n">odds_a</span> <span class="o">=</span> <span class="n">binomial_coefficient</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">odds_b</span> <span class="o">=</span> <span class="n">binomial_coefficient</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">odds_c</span> <span class="o">=</span> <span class="n">binomial_coefficient</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pmax</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">odds</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">odds_a</span> <span class="o">*</span> <span class="n">odds_b</span><span class="p">)</span><span class="o">/</span><span class="n">odds_c</span><span class="p">)</span>
+            <span class="n">odds_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {}, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">odds_d</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">odds_a</span> <span class="o">*</span> <span class="n">odds_b</span><span class="p">)</span><span class="o">/</span><span class="n">odds_c</span><span class="p">)</span>
+            <span class="n">odds_PB</span> <span class="o">=</span> <span class="n">odds_d</span> <span class="o">*</span> <span class="n">pmax</span>
+            <span class="n">odds_wo_PB</span> <span class="o">=</span> <span class="n">odds_d</span> <span class="o">*</span> <span class="n">pmax</span> <span class="o">/</span> <span class="p">(</span><span class="n">pmax</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">odds_list_PB</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds_PB</span><span class="p">)</span>
+            <span class="n">odds_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds_wo_PB</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {} &amp; PB, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds_PB</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {} without PB, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds_wo_PB</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="k">return</span>
+
+
+<span class="n">powerball_odds</span><span class="p">(</span><span class="mi">69</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">pmax</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;-----------------------------------------------------------------&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="n">powerball_odds</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">pmax</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span></code></pre></div>
+
+<p>The code snippet above if ran arrives at two different outputs.</p>
+
+<p><label for="table-1-id" class="margin-toggle"> ⊕</label><input type="checkbox" id="table-1-id" class="margin-toggle" /><span class="marginnote"><em>Table 1</em>: The output of the odds for the current Powerball Lottery  </span></p>
+<div class="table-wrapper">
+<table class="booktabs">
+          <thead>
+            <tr><th colspan="2" class="cmid">Output 1: N=69 | P=26</th><th class="nocmid"></th></tr>
+            <tr><th>Number Correct</th><th>1/Probability</th><th>Prize</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0+No Powerball</td> <td>1.53</td>           <td>$0.00</td></tr>
+            <tr><td>0+Powerball</td>    <td>38.32</td>          <td>$4.00</td></tr>
+            <tr><td>1+No Powerball</td> <td>3.68</td>           <td>$0.00</td></tr>
+            <tr><td>1+Powerball</td>    <td>91.98</td>          <td>$4.00</td></tr>
+            <tr><td>2+No Powerball</td> <td>28.05</td>          <td>$7.00</td></tr>
+            <tr><td>2+Powerball</td>    <td>701.33</td>         <td>$0.00</td></tr>
+            <tr><td>3+No Powerball</td> <td>579.76</td>         <td>$7.00</td></tr>
+            <tr><td>3+Powerball</td>    <td>14,494.11</td>      <td>$100.00</td></tr>
+            <tr><td>4+No Powerball</td> <td>36,525.17</td>      <td>$100.00</td></tr>
+            <tr><td>4+Powerball</td>    <td>913,129.18</td>     <td>$50,000.00</td></tr>
+            <tr><td>5+No Powerball</td> <td>11,688,053.52</td>  <td>$1,000,000</td></tr>
+            <tr><td>5+Powerball</td>    <td>292,201,338.00</td> <td>Jackpot</td></tr>
+          </tbody>
+</table>
+</div>
+
+<p>Prior to October 7th, 2015, the Powerball lottery had the <em>FirstPool</em> ranging only to 59, and had the <em>SecondPool</em> ranging to 35. The output will allow you to visualize how the change in pool sizes changed the odds of the game and has helped to produce several enormous Powerball payouts!</p>
+
+<p><label for="table-1-id" class="margin-toggle"> ⊕</label><input type="checkbox" id="table-1-id" class="margin-toggle" /><span class="marginnote"><em>Table 2</em>: The output of the odds for the system that was in place for the Powerball Lottery from January 15, 2012 – October 3, 2015 </span></p>
+<div class="table-wrapper">
+<table class="booktabs">
+          <thead>
+            <tr><th colspan="2" class="cmid">Output 1: N=59 | P=35</th><th class="nocmid"></th></tr>
+            <tr><th>Number Correct</th><th>1/Probability</th><th>Prize</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0+No Powerball</td> <td>1.63</td>           <td>$0.00</td></tr>
+            <tr><td>0+Powerball</td>    <td>55.41</td>          <td>$4.00</td></tr>
+            <tr><td>1+No Powerball</td> <td>3.26</td>           <td>$0.00</td></tr>
+            <tr><td>1+Powerball</td>    <td>110.81</td>         <td>$4.00</td></tr>
+            <tr><td>2+No Powerball</td> <td>20.78</td>          <td>$7.00</td></tr>
+            <tr><td>2+Powerball</td>    <td>706.43</td>         <td>$0.00</td></tr>
+            <tr><td>3+No Powerball</td> <td>360.14</td>         <td>$7.00</td></tr>
+            <tr><td>3+Powerball</td>    <td>12,244.83</td>      <td>$100.00</td></tr>
+            <tr><td>4+No Powerball</td> <td>19,087.53</td>      <td>$100.00</td></tr>
+            <tr><td>4+Powerball</td>    <td>648,975.96</td>     <td>$10,000.00</td></tr>
+            <tr><td>5+No Powerball</td> <td>5,153,632.65</td>   <td>$1,000,000</td></tr>
+            <tr><td>5+Powerball</td>    <td>175,223,510.00</td> <td>Jackpot</td></tr>
+          </tbody>
+</table>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>This article covered how to use enumerative combinatorics to calculate the different number of combinations for each of the two pools in the Powerball Lottery, and how to calculate the different odds of winning for each type of ticket. Understanding the mathematics lays the foundation for the next article in Powerball series. Within that next article we will learn how to build a web scraper that gathers historical Powerball lottery data.</p>
+
+<figure><figcaption></figcaption><img src="/UrbanScientist/assets/img/MicroLogo@1x.png" /></figure>
+
+<p>About the author:</p>
+
+
+
+    </article>
+    <span class="print-footer">A Mathematical Understanding of the Powerball Lottery - December 27, 2019 - Jeremy A. Seibert</span>
+    <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="Jaseibert5@gmail.com"><span class="icon-mail"></span></a></li>
+    
+      <li>
+        <a href="https://twitter.com/__TheUrbanist__"><span class="icon-twitter"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/Jaseibert"><span class="icon-github"></span></a>
+      </li>
+    
+  </ul>
+<div class="credits">
+<span>&copy; 2018 &nbsp;&nbsp;JEREMY A. SEIBERT</span></br> <br>
+<span>This site is maintained by <a href="http://www.jeremyseibert.com"> www.jeremyseibert.com</a> as a site for Urban Economics, Computational Econometrics & Data Science Curiosities</span>
+</div>
+</footer>
+
+  </body>
+</html>
