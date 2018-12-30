@@ -5,7 +5,7 @@ date:   2019-12-27 08:41:00
 categories: Mathematics
 ---
 
-The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative adjustments in the game's structure. The most recent adjustment being set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook](https:address) for the project here.' %}
+The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative adjustments in the game's structure. The most recent adjustment was set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook](https://github.com/UrbanScientist/1_Mathematical_Understanding_of_Powerball) for the project here.' %}
 
 ## Brief History of the Powerball Lottery Game
 
@@ -101,7 +101,7 @@ In our example it is used where *N* is the number of balls in a single pool, *K*
 
 {% math %}{K \choose B}{N-K \choose K-B} \over {N \choose K}{% endmath %}
 
-This equation would work perfectly except for one final caveat. That being that the Powerball Lottery has two pools which balls are selected from. Just as we did before the rectification of the equation to accommodate two pools is not difficult. Having only one ball selected from the pool, we can take the probability of it getting selected, multiplied across the numerator of the hypergeometric distribution. With this modification it alters the equation to allow for the selection of 1 ball out of pool *P*, along with the other aforementioned variables.
+This equation would work perfectly except for one final caveat. That being that the Powerball Lottery has two pools which balls are selected from. Just as we did before, the rectification of the equation to accommodate two pools is not difficult. Having only one ball selected from the pool, we can take the probability of it getting selected, multiplied across the numerator of the hypergeometric distribution. With this modification it alters the equation to allow for the selection of 1 ball out of pool *P*, along with the other aforementioned variables.
 
 {% math %}{1 \over P}{K \choose B}{N-K \choose K-B} \over {N \choose K}{% endmath %}
 
@@ -120,6 +120,8 @@ def powerball_odds(n,k,pmax=0):
     k: The total number of balls that a player can draw out of the n pool
     pmax:(optional): The maximum value if there is a powerball drawn from a seperate pool.        
     '''
+    global odds_list
+    global odds_list_PB
     odds_list_PB = []
     odds_list = []
     m = n-k
@@ -131,25 +133,16 @@ def powerball_odds(n,k,pmax=0):
         if pmax == 0:
             odds = 1/((odds_a * odds_b)/odds_c)
             odds_list.append(odds)
-            print('The odds of getting {} out of {}, is 1 and {}'.format(i,round(odds,k,2)))
         else:
             odds_d = 1/((odds_a * odds_b)/odds_c)
             odds_PB = odds_d * pmax
             odds_wo_PB = odds_d * pmax / (pmax - 1)
             odds_list_PB.append(odds_PB)
             odds_list.append(odds_wo_PB)
-            print('The odds of getting {} out of {} & PB, is 1 and {}'.format(i,k,round(odds_PB,2)))
-            print('The odds of getting {} out of {} without PB, is 1 and {}'.format(i,k,round(odds_wo_PB,2)))
-    return
-
-
-powerball_odds(69,5,pmax=26)
-print('-----------------------------------------------------------------')
-print('')
-powerball_odds(59,5,pmax=35)
+    return odds_list, odds_list_PB
 {% endhighlight %}
 
-The code snippet above if ran arrives at two different outputs.
+The code snippet above if ran arrives at two different outputs. Which are two lists of the odds for each type of ticket combination. If you are running on the associated Jupyter notebook, follow the cleaning steps and you will arrive at the correct DataFrames that resemble the following tables.
 
 {% marginnote 'table-1-id' '*Table 1*: The output of the odds for the current Powerball Lottery ' %}
 <div class="table-wrapper">
@@ -189,8 +182,8 @@ Prior to October 7th, 2015, the Powerball lottery had the *FirstPool* ranging on
             <tr><td>0+Powerball</td>    <td>55.41</td>          <td>$4.00</td></tr>
             <tr><td>1+No Powerball</td> <td>3.26</td>           <td>$0.00</td></tr>
             <tr><td>1+Powerball</td>    <td>110.81</td>         <td>$4.00</td></tr>
-            <tr><td>2+No Powerball</td> <td>20.78</td>          <td>$7.00</td></tr>
-            <tr><td>2+Powerball</td>    <td>706.43</td>         <td>$0.00</td></tr>
+            <tr><td>2+No Powerball</td> <td>20.78</td>          <td>$0.00</td></tr>
+            <tr><td>2+Powerball</td>    <td>706.43</td>         <td>$7.00</td></tr>
             <tr><td>3+No Powerball</td> <td>360.14</td>         <td>$7.00</td></tr>
             <tr><td>3+Powerball</td>    <td>12,244.83</td>      <td>$100.00</td></tr>
             <tr><td>4+No Powerball</td> <td>19,087.53</td>      <td>$100.00</td></tr>
@@ -201,11 +194,15 @@ Prior to October 7th, 2015, the Powerball lottery had the *FirstPool* ranging on
 </table>
 </div>
 
+## A Quick Comparison between the to tables
+
+When running through the associated Jupyter notebook we see that the Powerball's change in pool size accomplished two things. It first improved the odds of having a winning ticket with the Powerball for tickets with 3 correct numbers or less.Secondly it decreased the odds of having a winning ticket with the Powerball for tickets with 4 or more correct numbers. For tickets without the correct Powerball the odds of winning either stayed the same or increased. This change has allowed the Powerball to increase the coverage of the lottery thus implicitly causing higher jackpot payouts.
+
 ## Conclusion
 
 This article covered how to use enumerative combinatorics to calculate the different number of combinations for each of the two pools in the Powerball Lottery, and how to calculate the different odds of winning for each type of ticket. Understanding the mathematics lays the foundation for the next article in Powerball series. Within that next article we will learn how to build a web scraper that gathers historical Powerball lottery data.
 
-{% maincolumn 'assets/img/MicroLogo@1x.png' %}
 
+### About the author
 
-About the author:
+My name is Jeremy A. Seibert. I built the **Urban Scientist** as a site to host my explorations in the intersection between Economics and Data Science. Most of the posts that I write will have an associated Jupyter notebook accompanying them feel free to check those out at the [Urban Scientist Github ](https://github.com/UrbanScientist). Check out the about page for more info on my background.

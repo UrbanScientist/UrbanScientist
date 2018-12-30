@@ -8,6 +8,16 @@
   <title>A Mathematical Understanding of the Powerball Lottery</title>
   <meta name="description" content="The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative...">
 
+  <!--Google Analytics Tag -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131502724-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-131502724-1');
+  </script>
+
   <!-- Google Fonts loaded here depending on setting in _data/options.yml true loads font, blank does not-->
   
     <link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
@@ -17,7 +27,7 @@
   
     <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
-  
+
   <link rel="stylesheet" type="text/css" href="/css/tufte.css">
   <!-- <link rel="stylesheet" type="text/css" href="/css/print.css" media="print"> -->
 
@@ -61,7 +71,7 @@
       <h1>A Mathematical Understanding of the Powerball Lottery</h1>
 <p class="subtitle">December 27, 2019</p>
 
-<p>The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative adjustments in the game’s structure. The most recent adjustment being set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own <label for="One" class="margin-toggle sidenote-number"></label><input type="checkbox" id="One" class="margin-toggle" /><span class="sidenote">I will be using Python 3.7 for this project. Access the associated <a href="https:address">Jupyter Notebook</a> for the project here. </span></p>
+<p>The popular Powerball Lottery offered in the United States has in the past years statistically evolved to accommodate larger payouts due to several iterative adjustments in the game’s structure. The most recent adjustment was set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own <label for="One" class="margin-toggle sidenote-number"></label><input type="checkbox" id="One" class="margin-toggle" /><span class="sidenote">I will be using Python 3.7 for this project. Access the associated <a href="https://github.com/UrbanScientist/1_Mathematical_Understanding_of_Powerball">Jupyter Notebook</a> for the project here. </span></p>
 
 <h2 id="brief-history-of-the-powerball-lottery-game">Brief History of the Powerball Lottery Game</h2>
 
@@ -155,7 +165,7 @@
 
 <div class="mathblock"><script type="math/tex; mode=display">{K \choose B}{N-K \choose K-B} \over {N \choose K}</script></div>
 
-<p>This equation would work perfectly except for one final caveat. That being that the Powerball Lottery has two pools which balls are selected from. Just as we did before the rectification of the equation to accommodate two pools is not difficult. Having only one ball selected from the pool, we can take the probability of it getting selected, multiplied across the numerator of the hypergeometric distribution. With this modification it alters the equation to allow for the selection of 1 ball out of pool <em>P</em>, along with the other aforementioned variables.</p>
+<p>This equation would work perfectly except for one final caveat. That being that the Powerball Lottery has two pools which balls are selected from. Just as we did before, the rectification of the equation to accommodate two pools is not difficult. Having only one ball selected from the pool, we can take the probability of it getting selected, multiplied across the numerator of the hypergeometric distribution. With this modification it alters the equation to allow for the selection of 1 ball out of pool <em>P</em>, along with the other aforementioned variables.</p>
 
 <div class="mathblock"><script type="math/tex; mode=display">{1 \over P}{K \choose B}{N-K \choose K-B} \over {N \choose K}</script></div>
 
@@ -173,6 +183,8 @@
 <span class="sd">    k: The total number of balls that a player can draw out of the n pool</span>
 <span class="sd">    pmax:(optional): The maximum value if there is a powerball drawn from a seperate pool.        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">odds_list</span>
+    <span class="k">global</span> <span class="n">odds_list_PB</span>
     <span class="n">odds_list_PB</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">odds_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="n">k</span>
@@ -184,24 +196,15 @@
         <span class="k">if</span> <span class="n">pmax</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">odds</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">odds_a</span> <span class="o">*</span> <span class="n">odds_b</span><span class="p">)</span><span class="o">/</span><span class="n">odds_c</span><span class="p">)</span>
             <span class="n">odds_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {}, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">odds_d</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">odds_a</span> <span class="o">*</span> <span class="n">odds_b</span><span class="p">)</span><span class="o">/</span><span class="n">odds_c</span><span class="p">)</span>
             <span class="n">odds_PB</span> <span class="o">=</span> <span class="n">odds_d</span> <span class="o">*</span> <span class="n">pmax</span>
             <span class="n">odds_wo_PB</span> <span class="o">=</span> <span class="n">odds_d</span> <span class="o">*</span> <span class="n">pmax</span> <span class="o">/</span> <span class="p">(</span><span class="n">pmax</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">odds_list_PB</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds_PB</span><span class="p">)</span>
             <span class="n">odds_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">odds_wo_PB</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {} &amp; PB, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds_PB</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;The odds of getting {} out of {} without PB, is 1 and {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">odds_wo_PB</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
-    <span class="k">return</span>
+    <span class="k">return</span> <span class="n">odds_list</span><span class="p">,</span> <span class="n">odds_list_PB</span></code></pre></div>
 
-
-<span class="n">powerball_odds</span><span class="p">(</span><span class="mi">69</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">pmax</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;-----------------------------------------------------------------&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-<span class="n">powerball_odds</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">pmax</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span></code></pre></div>
-
-<p>The code snippet above if ran arrives at two different outputs.</p>
+<p>The code snippet above if ran arrives at two different outputs. Which are two lists of the odds for each type of ticket combination. If you are running on the associated Jupyter notebook, follow the cleaning steps and you will arrive at the correct DataFrames that resemble the following tables.</p>
 
 <p><label for="table-1-id" class="margin-toggle"> ⊕</label><input type="checkbox" id="table-1-id" class="margin-toggle" /><span class="marginnote"><em>Table 1</em>: The output of the odds for the current Powerball Lottery  </span></p>
 <div class="table-wrapper">
@@ -241,8 +244,8 @@
             <tr><td>0+Powerball</td>    <td>55.41</td>          <td>$4.00</td></tr>
             <tr><td>1+No Powerball</td> <td>3.26</td>           <td>$0.00</td></tr>
             <tr><td>1+Powerball</td>    <td>110.81</td>         <td>$4.00</td></tr>
-            <tr><td>2+No Powerball</td> <td>20.78</td>          <td>$7.00</td></tr>
-            <tr><td>2+Powerball</td>    <td>706.43</td>         <td>$0.00</td></tr>
+            <tr><td>2+No Powerball</td> <td>20.78</td>          <td>$0.00</td></tr>
+            <tr><td>2+Powerball</td>    <td>706.43</td>         <td>$7.00</td></tr>
             <tr><td>3+No Powerball</td> <td>360.14</td>         <td>$7.00</td></tr>
             <tr><td>3+Powerball</td>    <td>12,244.83</td>      <td>$100.00</td></tr>
             <tr><td>4+No Powerball</td> <td>19,087.53</td>      <td>$100.00</td></tr>
@@ -253,13 +256,17 @@
 </table>
 </div>
 
+<h2 id="a-quick-comparison-between-the-to-tables">A Quick Comparison between the to tables</h2>
+
+<p>When running through the associated Jupyter notebook we see that the Powerball’s change in pool size accomplished two things. It first improved the odds of having a winning ticket with the Powerball for tickets with 3 correct numbers or less.Secondly it decreased the odds of having a winning ticket with the Powerball for tickets with 4 or more correct numbers. For tickets without the correct Powerball the odds of winning either stayed the same or increased. This change has allowed the Powerball to increase the coverage of the lottery thus implicitly causing higher jackpot payouts.</p>
+
 <h2 id="conclusion">Conclusion</h2>
 
 <p>This article covered how to use enumerative combinatorics to calculate the different number of combinations for each of the two pools in the Powerball Lottery, and how to calculate the different odds of winning for each type of ticket. Understanding the mathematics lays the foundation for the next article in Powerball series. Within that next article we will learn how to build a web scraper that gathers historical Powerball lottery data.</p>
 
-<figure><figcaption></figcaption><img src="/assets/img/MicroLogo@1x.png" /></figure>
+<h3 id="about-the-author">About the author</h3>
 
-<p>About the author:</p>
+<p>My name is Jeremy A. Seibert. I built the <strong>Urban Scientist</strong> as a site to host my explorations in the intersection between Economics and Data Science. Most of the posts that I write will have an associated Jupyter notebook accompanying them feel free to check those out at the <a href="https://github.com/UrbanScientist">Urban Scientist Github </a>. Check out the about page for more info on my background.</p>
 
 
 
