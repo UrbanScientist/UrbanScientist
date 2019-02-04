@@ -1,16 +1,108 @@
----
-layout: full-width
-title: Articles
-# Note that this index page uses a full-width layout!
----
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <ul class="content-listing ">
-    {% for post in site.posts %}
+  <title>Articles</title>
+  <meta name="description" content="The Urbanist Scientist's guide to the curiosities of Mathematic's, Machines and Economic's.">
+
+  <!--Google Analytics Tag -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131502724-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-131502724-1');
+  </script>
+
+  <!-- Google Fonts loaded here depending on setting in _data/options.yml true loads font, blank does not-->
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+  
+
+  <!-- Load up MathJax script if needed ... specify in /_data/options.yml file-->
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+  <link rel="stylesheet" type="text/css" href="/css/tufte.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/css/print.css" media="print"> -->
+
+  <link rel="canonical" href="/">
+
+  <link rel="alternate" type="application/rss+xml" title="Urban Scientist" href="/feed.xml" />
+</head>
+
+  <body class="full-width">
+    <!--- Header and nav template site-wide -->
+<header>
+    <nav class="group">
+	<a href="/"><img class="badge" src="/assets/img/Full_Logo.png" alt="CH"></a>
+	
+		
+  	
+		
+		    
+		      <a class="active" href="/" class="active">Articles</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/about/">About</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/css/print.css"></a>
+		    
+	    
+  	
+		
+  	
+	</nav>
+</header>
+
+    <article>
+        <ul class="content-listing ">
+    
         <li class="listing">
           <hr class="slender">
-          <a href="{{ post.url | prepend: site.baseurl }}"><h3 class="contrast">{{ post.title }}</h3></a>
-          <br><span class="smaller">{{ post.date | date: "%B %-d, %Y" }}</span>  <br/>
-          <div>{{ post.excerpt }}</div>
+          <a href="/articles/19/Data-Science-on-the-Powerball-blog"><h3 class="contrast">Web Scraper to gather Historical Powerball Lottery Data</h3></a>
+          <br><span class="smaller">January 5, 2019</span>  <br/>
+          <div><h2 id="introduction">Introduction</h2>
+<p>In the previous blog post, we explored the mathematical underpinnings behind the Powerball lottery. We learned that using enumerative combinatorics in the binomial coefficient, we can calculate the number of possible combinations that exist within any given Powerball drawing. Within this next article, we will learn how to build a web scraper using Python that gathers historical winning Powerball Number combinations.</p>
+
+</div>
         </li>
-    {% endfor %}
+    
   </ul>
+
+    </article>
+    <span class="print-footer">Articles - Jeremy A. Seibert</span>
+    <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="Jaseibert5@gmail.com"><span class="icon-mail"></span></a></li>
+    
+      <li>
+        <a href="https://twitter.com/__TheUrbanist__"><span class="icon-twitter"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/Jaseibert"><span class="icon-github"></span></a>
+      </li>
+    
+  </ul>
+<div class="credits">
+<span>&copy; 2019 &nbsp;&nbsp;JEREMY A. SEIBERT</span></br> <br>
+<span>This site is maintained by <a href="http://www.jeremyseibert.com"> www.jeremyseibert.com</a> as a site for Urban Economics, Computational Econometrics & Data Science Curiosities</span>
+</div>
+</footer>
+
+  </body>
+</html>
