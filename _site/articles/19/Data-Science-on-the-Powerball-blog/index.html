@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Web Scraper to gather Historical Powerball Lottery Data</title>
+  <meta name="description" content="IntroductionIn the previous blog post, we explored the mathematical underpinnings behind the Powerball lottery. We learned that using enumerative combinatori...">
+
+  <!--Google Analytics Tag -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131502724-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-131502724-1');
+  </script>
+
+  <!-- Google Fonts loaded here depending on setting in _data/options.yml true loads font, blank does not-->
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+  
+
+  <!-- Load up MathJax script if needed ... specify in /_data/options.yml file-->
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+  <link rel="stylesheet" type="text/css" href="/css/tufte.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/css/print.css" media="print"> -->
+
+  <link rel="canonical" href="/articles/19/Data-Science-on-the-Powerball-blog">
+
+  <link rel="alternate" type="application/rss+xml" title="Urban Scientist" href="/feed.xml" />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <nav class="group">
+	<a href="/"><img class="badge" src="/assets/img/Full_Logo.png" alt="CH"></a>
+	
+		
+  	
+		
+		    
+		      <a href="/index.html">Articles</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/about/index.html">About</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/css/print.css"></a>
+		    
+	    
+  	
+		
+  	
+	</nav>
+</header>
+
+    <article class="group">
+      <h1>Web Scraper to gather Historical Powerball Lottery Data</h1>
+<p class="subtitle">January 5, 2019</p>
+
+<h2 id="introduction">Introduction</h2>
+<p>In the previous blog post, we explored the mathematical underpinnings behind the Powerball lottery. We learned that using enumerative combinatorics in the binomial coefficient, we can calculate the number of possible combinations that exist within any given Powerball drawing. Within this next article, we will learn how to build a web scraper using Python that gathers historical winning Powerball Number combinations. <!--more--> Once we have gathered the scraped information, we will learn how to clean it and convert it into it usable Pandas DataFrame.</p>
+
+<h2 id="brief-web-scraping-overview">Brief Web Scraping Overview</h2>
+
+<p>A Web scraper is a program that uses the hypertext transfer protocol to request information from websites, and then saves that information for some purpose. A web scraper behaves similar to an API, in that it can be run to consistently return desired information from a website. More often than not the websites that house the information that we are interested in are not robust enough to have an API. Thus, we have to be clever as to how we extract information that we want.</p>
+
+<p>A rudimentary example of a web scraper is to simply copy and paste the information that we’re looking for into a program like Google sheets or Microsoft Excel. Beyond simply being tedious and time intensive, there is another reason why copying, and pasting is not an optimal web scraping process. Say for instance the information that is being scraped changes periodically. The individual who is doing the copying and pasting would have to iteratively go back and copy and paste the new information each time a change occurred. In this article we will build and implement a web scraper using Python. It will allow us to iteratively and consistently collect the information that we’re looking for each time we use it.</p>
+
+<h3 id="legality-of-web-scrapers">Legality of Web Scrapers</h3>
+
+<p>Using this point here in the article I do want to say that there is a matter of legality associated with web scrapers. One, the way that web scrapers are built they can iteratively make thousands of HTTP get requests from sites in a very short amount time. This when done improperly can send large unexpected traffic loads to server hosting website potentially cause the site to go down. Two, if the site explicitly states within their terms of service (ToS) or within their prohibited operations page, that automated data collection is not allowed, then don’t do it.</p>
+
+<p>A great way to check the sites rules on web scraping is to look for a page called robots.txt. On most sites this file denotes what is and is not allowed for robots to crawl. This article we will be using the Wisconsin lottery’s website to collect historical Powerball winning ticket combinations. Going to <a href="https://www.wilottery.com/robots.txt">Wisconson Lottery’s Robots.txt File</a>, we see that there are only two disallowed processes for web scrapers. Luckily, we will be scraping neither of these sections of the site.</p>
+
+<h3 id="how-web-scrapers-work">How Web Scrapers Work</h3>
+
+<p>There are three primary components of any web scraper. The first component of any web scraper gives it the ability to parse the HTML of a given website. The second component searches over the HTML and gathers the information of interest. Within our web scraper we will define a function called <em>parse_and_gather()</em>  that does both of these processes automatically for us.</p>
+
+<p>Once the web scraper has parsed the HTML and gathered the pertinent information, it is up to the developer to decide what the most applicable format to convert the data to. Thus, the final component have any web scraper formats together data into the appropriate format. In our case, we will write another function called <em>build_dataframe()</em>, that takes the gathered information and converts it into a Pandas DataFrame.</p>
+
+<h2 id="import-the-necessary-packages">Import the Necessary Packages</h2>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span>
+<span class="kn">import</span> <span class="nn">lxml.html</span> <span class="kn">as</span> <span class="nn">lh</span></code></pre></div>
+
+<p><a href="https://pandas.pydata.org"><strong>Pandas</strong></a> - Pandas is an Open-Source Project and a python library that helps python users work with multidimensional data, or panel data in a computational form.</p>
+
+<p><a href="http://docs.python-requests.org/en/master/"><strong>Requests</strong></a> - Requests is a python library that makes using the Hypertext Transfer Protocol via python a simple to do.</p>
+
+<p><a href="https://lxml.de"><strong>Lxml</strong></a> - LXML is a python library that allow python users a way to computationally interact with HTML or XML elements.</p>
+
+<h2 id="build-a-header-dictionary">Build a Header dictionary</h2>
+
+<p>After importing the necessary Python libraries let us begin to discuss the hypertext transfer protocol at a little more depth. There’re two primary actors within HTTP process. There is the client, who requests information from the server. And then there is the server which responds to the client by sending resources like HTML files and other content. HTTP was built to facilitate and set standardized guidelines to this request and response process between a client and the server. Within a client request to a server there are typically three primary components that make up a request message. The first part you have the request line otherwise known as the client request method. To get request tells the server explicitly the information that the client is requesting to be served. They are several different kinds of request methods the client can make to a server, these include GET, POST, DELETE, TRACE, CONNECT, OPTIONS, PUT, and HEAD requests. The second part of the request message we call HTTP header fields which are used to relay specific information about the client to the server. In the final component is an optional message that can be sent to the specific server from the client.</p>
+
+<p>When building a web scraper, you must have the first component of a client request message to gather the information from the server. The two most common request methods that we use within our web scrapers are the GET and POST methods. GET method allows us to request a specific set of information from the server, whereas the POST method allows us to send a specific set of information to server. Within our web scraper we will use an GET method to request the relevant Powerball data from the Wisconsin lottery website.</p>
+
+<p>Though not a necessity is always good practice to include the second component of the client request method within your web scraper. Again, remember that the second component is the request a header. The reason why this is so crucial is because it allows the server to verify that the client requesting information is a valid client. HTTP request headers are also helpful in what’s known as content negotiation, where clients specify to the server the specific type of content that they’re requesting.</p>
+
+<p>For our specific case we will use a python dictionary named headers to define our HTTP request headers.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>	<span class="s">&#39;accept&#39;</span><span class="p">:</span> <span class="s">&#39;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#39;</span><span class="p">,</span>
+            <span class="s">&#39;accept-encoding&#39;</span><span class="p">:</span> <span class="s">&#39;gzip, deflate, sdch, br&#39;</span><span class="p">,</span>
+            <span class="s">&#39;accept-language&#39;</span><span class="p">:</span> <span class="s">&#39;en-GB,en-US;q=0.8,en;q=0.6&#39;</span><span class="p">,</span>
+            <span class="s">&#39;upgrade-insecure-requests&#39;</span><span class="p">:</span> <span class="s">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s">&#39;Mozilla/5.0 (X11; Linux x86_64) Chrome/51.0.2704.79 Safari/537.36&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Cache-Control&#39;</span><span class="p">:</span> <span class="s">&#39;no-cache&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Connection&#39;</span><span class="p">:</span> <span class="s">&#39;keep-alive&#39;</span> <span class="p">}</span></code></pre></div>
+
+<p>We have an <em>accept</em> request field that tells the server the types of media that are acceptable to send back to us from the GET request. Here we define several different variants of HTML or XML that is appropriate to send it back. The addition of a lowercase ‘q’ in any request field indicates to the server something called the relative quality factor. This parameter is a range from [0-1] and defines to the relative degree of preference for each content type. If there is no q parameter defined, the entry is defaulted to a q parameter of 1. Further breaking down our accept request field, we see that the entries <em>’text/html’</em> and <em>’application/xhtml+xml’</em> do not have a q parameter, but the final entries <em>’application/xml;q=0.9’</em> and ,<em>’asterisk /asterisk’=0.8’</em> both do. This means that we are telling the server that we prefer the first to entries as they default to 1, and we prefer the final two entries at 90% and 80% respectively.<label for="One" class="margin-toggle sidenote-number"></label><input type="checkbox" id="One" class="margin-toggle" /><span class="sidenote">The ‘asterisk /asterisk’ requests from the server to use all other forms of the entry. </span></p>
+
+<p>The next request field is the <em>accept-encoding</em> field, which defines the type of content compression that is acceptable for the server to send back to us. In our case, this request field might be slightly redundant, because the information or requesting should needs no compression. Yet, rather than taking it out I thought I’d leave it in for you to see. After we define the acceptable compression, we then define the acceptable language, if applicable, for the server to send back information in. Here we denote this field as the <em>accept-language</em> field. We tell the server to send the information back to us in English (United States or British).</p>
+
+<h2 id="build-the-parse--gather-function">Build the Parse &amp; Gather Function</h2>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">parse_and_gather</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;This function makes the GET request &amp; collects the data&#39;&#39;&#39;</span>
+
+    <span class="c">#HTTP GET Call Setup</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://www.wilottery.com/lottogames/powerballhistoryOD.aspx&#39;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">lh</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">table_elements</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;//tr&#39;</span><span class="p">)</span>
+
+    <span class="c">#Define the Column Headers for the 5 Empty Column Headers</span>
+    <span class="n">num_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Num_1&#39;</span><span class="p">,</span> <span class="s">&#39;Num_2&#39;</span><span class="p">,</span> <span class="s">&#39;Num_3&#39;</span><span class="p">,</span> <span class="s">&#39;Num_4&#39;</span><span class="p">,</span> <span class="s">&#39;Num_5&#39;</span><span class="p">]</span>
+
+    <span class="c">#Fill in the Column Headers</span>
+    <span class="n">col_header</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">text_content</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">table_elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,[]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">col_header</span><span class="p">]</span>
+
+    <span class="c">#Fill in the middle 5 empty column headers with num_list</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">num_list</span><span class="p">)):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">col</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c">#Beacause the first row is the headers, the data is stored on the second row onwards</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">table_elements</span><span class="p">)):</span>
+        <span class="n">T</span><span class="o">=</span><span class="n">table_elements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="c"># If the table has more than the 8 Columns on the WI Lottery Site</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">!=</span><span class="mi">8</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c">#Convert the elements into integers and save them to col lists.     </span>
+        <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">iterchildren</span><span class="p">():</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">text_content</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="n">col</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">col</span></code></pre></div>
+
+<h2 id="build-the-formatting-function">Build the Formatting Function</h2>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">build_dataframe</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; This function creates a Pandas DataFrame from the data&#39;&#39;&#39;</span>
+
+    <span class="c">#Call the Gather Data Function</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">parse_and_gather</span><span class="p">()</span>
+
+    <span class="c">#Convert to a Dictionary</span>
+    <span class="n">Dict</span><span class="o">=</span><span class="p">{</span><span class="n">header</span><span class="p">:</span><span class="n">column</span> <span class="k">for</span> <span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="n">column</span><span class="p">)</span> <span class="ow">in</span> <span class="n">col</span><span class="p">}</span>
+
+    <span class="c">#Create a DataFrame</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">Dict</span><span class="p">)</span>
+
+    <span class="c">#Set the Date Column as the index</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;Draw Date&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c">#Convert the Index to a Pandas DatetimeIndex</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c">#Selects all Non-Digits</span>
+    <span class="n">digits</span> <span class="o">=</span> <span class="s">r&quot;\D+&quot;</span>
+    <span class="c">#Selects all spaces</span>
+    <span class="n">spaces</span> <span class="o">=</span> <span class="s">r&quot;\s+&quot;</span>
+
+    <span class="c">#Splits the powerplay column into just the integer values</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">spaces</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c">#Drop the old Powerplay column</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">&#39;Power Play&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c">#Add a new Powerplay column that contains the cleaned information</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">,</span> <span class="n">downcast</span><span class="o">=</span><span class="s">&#39;integer&#39;</span><span class="p">)</span>
+
+    <span class="c">#Drop the Cleaning Column</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></code></pre></div>
+
+<h2 id="view-output">View Output</h2>
+
+<h2 id="conclusion">Conclusion</h2>
+
+
+
+    </article>
+    <span class="print-footer">Web Scraper to gather Historical Powerball Lottery Data - January 5, 2019 - Jeremy A. Seibert</span>
+    <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="Jaseibert5@gmail.com"><span class="icon-mail"></span></a></li>
+    
+      <li>
+        <a href="https://twitter.com/__TheUrbanist__"><span class="icon-twitter"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/Jaseibert"><span class="icon-github"></span></a>
+      </li>
+    
+  </ul>
+<div class="credits">
+<span>&copy; 2019 &nbsp;&nbsp;JEREMY A. SEIBERT</span></br> <br>
+<span>This site is maintained by <a href="http://www.jeremyseibert.com"> www.jeremyseibert.com</a> as a site for Urban Economics, Computational Econometrics & Data Science Curiosities</span>
+</div>
+</footer>
+
+  </body>
+</html>
