@@ -3,13 +3,15 @@ layout: post
 title:  "A Mathematical Understanding of the Powerball Lottery"
 date:   2019-12-27 08:41:00
 categories: Mathematics
+
 ---
 
 The popular Powerball Lottery offered in the United States has in the past years, evolved to accommodate larger payouts due to several iterative adjustments in the game's structure. The most recent adjustment was set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook](https://github.com/UrbanScientist/1_Mathematical_Understanding_of_Powerball) for the project here.' %}
 
+
 ## Brief History of the Powerball Lottery Game
 
-Formed in a collaborative effort between the Multi-State Lottery Association (MUSL), a nonprofit organization and an agreement with the other US lotteries, the Powerball came to fruition. The Powerball Lottery is a Multi-State lottery game offered to play across 44 States in the US. With the efforts of the MUSL the first Powerball drawing was held in 1992. Powerball became the first lottery game to use two different pools of balls that the winning numbers were selected from. This was especially important because using the two different pools offered more variation by simultaneously allowing high jackpot odds, along with numerous prize levels and lower overall odds of winning.
+Formed in a collaborative effort between the Multi-State Lottery Association (a nonprofit organization), and an agreement with the other US lotteries, the Powerball came into fruition. The Powerball lottery is a Multi-State lottery game offered for to players across 44 States in the US. With the efforts of the Multi-State Lottery Association, the first Powerball drawing was held in 1992. The Powerball became the first lottery game to use two different pools of balls, from which the winning numbers were selected from. This was especially important for the Multi-State Lottery Association, because this two-pool system offered more variation in the numbers for players to select from, implicitly leading to high jackpot odds.
 
 ## The Game Structure
 
