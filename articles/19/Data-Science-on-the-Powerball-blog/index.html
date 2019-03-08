@@ -46,13 +46,13 @@
   	
 		
 		    
-		      <a href="/">Articles</a>
+		      <a href="/index.html">Articles</a>
 		    
 	    
   	
 		
 		    
-		      <a href="/about/">About</a>
+		      <a href="/about/index.html">About</a>
 		    
 	    
   	
@@ -94,9 +94,9 @@
 
 <h2 id="import-the-necessary-packages">Import the Necessary Packages</h2>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span>
-<span class="kn">import</span> <span class="nn">lxml.html</span> <span class="k">as</span> <span class="n">lh</span></code></pre></figure>
+<span class="kn">import</span> <span class="nn">lxml.html</span> <span class="kn">as</span> <span class="nn">lh</span></code></pre></div>
 
 <p><a href="https://pandas.pydata.org"><strong>Pandas</strong></a> - Pandas is an Open-Source Project and a python library that helps python users work with multidimensional data, or panel data in a computational form.</p>
 
@@ -114,13 +114,13 @@
 
 <p>For our specific case we will use a python dictionary named headers to define our HTTP request headers.</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>	<span class="s">'accept'</span><span class="p">:</span> <span class="s">'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'</span><span class="p">,</span>
-            <span class="s">'accept-encoding'</span><span class="p">:</span> <span class="s">'gzip, deflate, sdch, br'</span><span class="p">,</span>
-            <span class="s">'accept-language'</span><span class="p">:</span> <span class="s">'en-GB,en-US;q=0.8,en;q=0.6'</span><span class="p">,</span>
-            <span class="s">'upgrade-insecure-requests'</span><span class="p">:</span> <span class="s">'1'</span><span class="p">,</span>
-            <span class="s">'user-agent'</span><span class="p">:</span> <span class="s">'Mozilla/5.0 (X11; Linux x86_64) Chrome/51.0.2704.79 Safari/537.36'</span><span class="p">,</span>
-            <span class="s">'Cache-Control'</span><span class="p">:</span> <span class="s">'no-cache'</span><span class="p">,</span>
-            <span class="s">'Connection'</span><span class="p">:</span> <span class="s">'keep-alive'</span> <span class="p">}</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>	<span class="s">&#39;accept&#39;</span><span class="p">:</span> <span class="s">&#39;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#39;</span><span class="p">,</span>
+            <span class="s">&#39;accept-encoding&#39;</span><span class="p">:</span> <span class="s">&#39;gzip, deflate, sdch, br&#39;</span><span class="p">,</span>
+            <span class="s">&#39;accept-language&#39;</span><span class="p">:</span> <span class="s">&#39;en-GB,en-US;q=0.8,en;q=0.6&#39;</span><span class="p">,</span>
+            <span class="s">&#39;upgrade-insecure-requests&#39;</span><span class="p">:</span> <span class="s">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s">&#39;Mozilla/5.0 (X11; Linux x86_64) Chrome/51.0.2704.79 Safari/537.36&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Cache-Control&#39;</span><span class="p">:</span> <span class="s">&#39;no-cache&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Connection&#39;</span><span class="p">:</span> <span class="s">&#39;keep-alive&#39;</span> <span class="p">}</span></code></pre></div>
 
 <p>We have an <em>accept</em> request field that tells the server the types of media that are acceptable to send back to us from the GET request. Here we define several different variants of HTML or XML that is appropriate to send it back. The addition of a lowercase ‘q’ in any request field indicates to the server something called the relative quality factor. This parameter is a range from [0-1] and defines to the relative degree of preference for each content type. If there is no q parameter defined, the entry is defaulted to a q parameter of 1. Further breaking down our accept request field, we see that the entries <em>’text/html’</em> and <em>’application/xhtml+xml’</em> do not have a q parameter, but the final entries <em>’application/xml;q=0.9’</em> and ,<em>’asterisk /asterisk’=0.8’</em> both do. This means that we are telling the server that we prefer the first to entries as they default to 1, and we prefer the final two entries at 90% and 80% respectively.<label for="One" class="margin-toggle sidenote-number"></label><input type="checkbox" id="One" class="margin-toggle" /><span class="sidenote">The ‘asterisk /asterisk’ requests from the server to use all other forms of the entry. </span></p>
 
@@ -128,37 +128,37 @@
 
 <h2 id="build-the-parse--gather-function">Build the Parse &amp; Gather Function</h2>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">parse_and_gather</span><span class="p">():</span>
-    <span class="s">'''This function makes the GET request &amp; collects the data'''</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">parse_and_gather</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;This function makes the GET request &amp; collects the data&#39;&#39;&#39;</span>
 
-    <span class="c1">#HTTP GET Call Setup
-</span>    <span class="n">url</span> <span class="o">=</span> <span class="s">'https://www.wilottery.com/lottogames/powerballhistoryOD.aspx'</span>
+    <span class="c">#HTTP GET Call Setup</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;https://www.wilottery.com/lottogames/powerballhistoryOD.aspx&#39;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
     <span class="n">document</span> <span class="o">=</span> <span class="n">lh</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-    <span class="n">table_elements</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">'//tr'</span><span class="p">)</span>
+    <span class="n">table_elements</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;//tr&#39;</span><span class="p">)</span>
 
-    <span class="c1">#Define the Column Headers for the 5 Empty Column Headers
-</span>    <span class="n">num_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">'Num_1'</span><span class="p">,</span> <span class="s">'Num_2'</span><span class="p">,</span> <span class="s">'Num_3'</span><span class="p">,</span> <span class="s">'Num_4'</span><span class="p">,</span> <span class="s">'Num_5'</span><span class="p">]</span>
+    <span class="c">#Define the Column Headers for the 5 Empty Column Headers</span>
+    <span class="n">num_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Num_1&#39;</span><span class="p">,</span> <span class="s">&#39;Num_2&#39;</span><span class="p">,</span> <span class="s">&#39;Num_3&#39;</span><span class="p">,</span> <span class="s">&#39;Num_4&#39;</span><span class="p">,</span> <span class="s">&#39;Num_5&#39;</span><span class="p">]</span>
 
-    <span class="c1">#Fill in the Column Headers
-</span>    <span class="n">col_header</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">text_content</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">table_elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="c">#Fill in the Column Headers</span>
+    <span class="n">col_header</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">text_content</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">table_elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">col</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,[]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">col_header</span><span class="p">]</span>
 
-    <span class="c1">#Fill in the middle 5 empty column headers with num_list
-</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">num_list</span><span class="p">)):</span>
+    <span class="c">#Fill in the middle 5 empty column headers with num_list</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">num_list</span><span class="p">)):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
         <span class="n">col</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="c1">#Beacause the first row is the headers, the data is stored on the second row onwards
-</span>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">table_elements</span><span class="p">)):</span>
+    <span class="c">#Beacause the first row is the headers, the data is stored on the second row onwards</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">table_elements</span><span class="p">)):</span>
         <span class="n">T</span><span class="o">=</span><span class="n">table_elements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 
-        <span class="c1"># If the table has more than the 8 Columns on the WI Lottery Site
-</span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">!=</span><span class="mi">8</span><span class="p">:</span>
+        <span class="c"># If the table has more than the 8 Columns on the WI Lottery Site</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">!=</span><span class="mi">8</span><span class="p">:</span>
             <span class="k">break</span>
 
-        <span class="c1">#Convert the elements into integers and save them to col lists.     
-</span>        <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+        <span class="c">#Convert the elements into integers and save them to col lists.     </span>
+        <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">iterchildren</span><span class="p">():</span>
             <span class="n">data</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">text_content</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
@@ -168,46 +168,46 @@
                     <span class="k">pass</span>
             <span class="n">col</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
-    <span class="k">return</span> <span class="n">col</span></code></pre></figure>
+    <span class="k">return</span> <span class="n">col</span></code></pre></div>
 
 <h2 id="build-the-formatting-function">Build the Formatting Function</h2>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">build_dataframe</span><span class="p">():</span>
-    <span class="s">''' This function creates a Pandas DataFrame from the data'''</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">build_dataframe</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; This function creates a Pandas DataFrame from the data&#39;&#39;&#39;</span>
 
-    <span class="c1">#Call the Gather Data Function
-</span>    <span class="n">col</span> <span class="o">=</span> <span class="n">parse_and_gather</span><span class="p">()</span>
+    <span class="c">#Call the Gather Data Function</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">parse_and_gather</span><span class="p">()</span>
 
-    <span class="c1">#Convert to a Dictionary
-</span>    <span class="n">Dict</span><span class="o">=</span><span class="p">{</span><span class="n">header</span><span class="p">:</span><span class="n">column</span> <span class="k">for</span> <span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="n">column</span><span class="p">)</span> <span class="ow">in</span> <span class="n">col</span><span class="p">}</span>
+    <span class="c">#Convert to a Dictionary</span>
+    <span class="n">Dict</span><span class="o">=</span><span class="p">{</span><span class="n">header</span><span class="p">:</span><span class="n">column</span> <span class="k">for</span> <span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="n">column</span><span class="p">)</span> <span class="ow">in</span> <span class="n">col</span><span class="p">}</span>
 
-    <span class="c1">#Create a DataFrame
-</span>    <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">Dict</span><span class="p">)</span>
+    <span class="c">#Create a DataFrame</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">Dict</span><span class="p">)</span>
 
-    <span class="c1">#Set the Date Column as the index
-</span>    <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">'Draw Date'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#Set the Date Column as the index</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;Draw Date&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="c1">#Convert the Index to a Pandas DatetimeIndex
-</span>    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c">#Convert the Index to a Pandas DatetimeIndex</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-    <span class="c1">#Selects all Non-Digits
-</span>    <span class="n">digits</span> <span class="o">=</span> <span class="s">r"\D+"</span>
-    <span class="c1">#Selects all spaces
-</span>    <span class="n">spaces</span> <span class="o">=</span> <span class="s">r"\s+"</span>
+    <span class="c">#Selects all Non-Digits</span>
+    <span class="n">digits</span> <span class="o">=</span> <span class="s">r&quot;\D+&quot;</span>
+    <span class="c">#Selects all spaces</span>
+    <span class="n">spaces</span> <span class="o">=</span> <span class="s">r&quot;\s+&quot;</span>
 
-    <span class="c1">#Splits the powerplay column into just the integer values
-</span>    <span class="n">df</span><span class="p">[</span><span class="s">'Power Play_Clean'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Power Play'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">spaces</span><span class="p">)</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span><span class="o">.</span><span class="nb">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c">#Splits the powerplay column into just the integer values</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">spaces</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1">#Drop the old Powerplay column
-</span>    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'Power Play'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#Drop the old Powerplay column</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">&#39;Power Play&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="c1">#Add a new Powerplay column that contains the cleaned information
-</span>    <span class="n">df</span><span class="p">[</span><span class="s">'Power Play'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'Power Play_Clean'</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s">'coerce'</span><span class="p">,</span> <span class="n">downcast</span><span class="o">=</span><span class="s">'integer'</span><span class="p">)</span>
+    <span class="c">#Add a new Powerplay column that contains the cleaned information</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s">&#39;coerce&#39;</span><span class="p">,</span> <span class="n">downcast</span><span class="o">=</span><span class="s">&#39;integer&#39;</span><span class="p">)</span>
 
-    <span class="c1">#Drop the Cleaning Column
-</span>    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'Power Play_Clean'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c">#Drop the Cleaning Column</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">&#39;Power Play_Clean&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">df</span></code></pre></figure>
+    <span class="k">return</span> <span class="n">df</span></code></pre></div>
 
 <h2 id="view-output">View Output</h2>
 
