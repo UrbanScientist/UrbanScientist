@@ -1,25 +1,29 @@
 ---
 layout: post
 title:  "A Mathematical Understanding of the Powerball Lottery"
-date:   2019-12-27 08:41:00
+date:   2018-12-27 08:41:00
 categories: Mathematics
 
 ---
 
-The popular Powerball Lottery offered in the United States has in the past years, evolved to accommodate larger payouts due to several iterative adjustments in the game's structure. The most recent adjustment was set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration has opened the opportunity for players to potentially win payouts in excess of $1 billion. This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities or odds associated with the Powerball Lottery game, and to statistically and mathematically explore of the historical outcomes arising from each drawing from the game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook](https://github.com/UrbanScientist/1_Mathematical_Understanding_of_Powerball) for the project here.' %}
+The popular Powerball lottery offered in the United States has in the past years, evolved to accommodate larger payouts due to several iterative adjustments in the game's structure. The most recent adjustment was set in place for the drawing which occurred on October 7th, 2015. This probabilistic alteration opened the opportunity for players to potentially win payouts in excess of $1 billion.
+
+This post is the first in a series and seeks to understand how to calculate and comprehend the underlying probabilities associated with the Powerball lottery game. <!--more--> If you prefer to computationally walk through the blog post, I will place code snippets within this article for you to run on your own {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook](https://github.com/UrbanScientist/1_Mathematical_Understanding_of_Powerball) for the project here.' %}
 
 
 ## Brief History of the Powerball Lottery Game
 
-Formed in a collaborative effort between the Multi-State Lottery Association (a nonprofit organization), and an agreement with the other US lotteries, the Powerball came into fruition. The Powerball lottery is a Multi-State lottery game offered for to players across 44 States in the US. With the efforts of the Multi-State Lottery Association, the first Powerball drawing was held in 1992. The Powerball became the first lottery game to use two different pools of balls, from which the winning numbers were selected from. This was especially important for the Multi-State Lottery Association, because this two-pool system offered more variation in the numbers for players to select from, implicitly leading to high jackpot odds.
+Formed through a collaborative effort between the Multi-State Lottery Association (a nonprofit organization), and an agreement with the other US lotteries, the Powerball came into fruition. As mentioned in the name of the organization that set it up, the Powerball lottery is a Multi-State lottery game offered for to players across 44 States in the US.
+
+With the efforts of the Multi-State Lottery Association, the first Powerball drawing was held in 1992. Unlike the other lottery game structures of the time, the Powerball became the first lottery game to use two different pools of balls from which the winning numbers were selected from. This was especially important for the Multi-State Lottery Association, because this two-pool system offered more variation in the numbers for players to select from, implicitly leading to high jackpot odds.
 
 ## The Game Structure
 
-For those who are not familiar with how to play the Powerball lottery, the game structure is very simple. There is one player who chooses numbers from two different pools. One can think of a pool as consisting of a range from 1 to *N*, where the range implies that for every integer *x* within it is greater than or equal to 1, and less than or equal to *N*.
+For those who are not familiar with how to play the Powerball lottery, the game structure is very simple. There is one player who chooses two sets of numbers from two different pools. One can think of a pool as consisting of a range from 1 to *N*, where the range implies that for every integer *x* within it is greater than or equal to 1, and less than or equal to *N*.
 
  {% math %} Pool = {[1,N] \implies \{ x \in \mathbb{Z} :  1  \leq  x  \leq  N\}}{% endmath %}
 
-The players can select their matrix of numbers by using the "Quick Pick" option, which allows a machine to choose random values for their ticket, or the players can create their own selection matrix on a card which is ran through the system manually.
+The players can select their two different sets of numbers by using the "Quick Pick" option, which allows a machine to choose random values for their ticket, or the players can manually create their own selection matrix.
 
 ##  Powerball Ticket Combinations
 
@@ -27,11 +31,13 @@ For the first pool, or the white balls in the Powerball, *N* = 69 making the ran
 
 {% math %} First Pool = {[1,69] \implies \{ x \in \mathbb{Z} :  1  \leq  x  \leq  69\}}{% endmath %}
 
-These five numbers, regardless of their order, must match the five numbers drawn from the *FirstPool* by the lottery in order for a chance to win. This type of combination is considered a *combination without replacement*. This idea can be conceptualized in that when the first number is drawn it has a 1 in 69 possibility of matching a ball drawn in the lottery. With the second number there are now only 68 numbers left to draw from, because the numbers are chosen without replacement. Thus, there is now only a 1 in 68 possibility of selecting the matching number. Continuing this logic forward across all the five numbers necessary we arrive at, (1  in  69 x 68 x 67 x 66 x 65) possibilities.
+These five numbers, regardless of their order, must match the five numbers drawn from the *FirstPool* by the lottery in order for a chance to win the entire Jackpot. In the game play, when the first number is drawn it has a 1 in 69 possibility of matching a ball drawn in the lottery, this leads to the second number being drawn from a pool of 68 numbers, or a 1 in 68 possibility of matching a ball in the lottery. This type of combination is considered a *combination without replacement*. When continuing this logic forward across all the five numbers necessary we arrive at, (1  in  69 x 68 x 67 x 66 x 65) possibilities.
 
-This same concept can be expressed using enumerative combinatorics. Combinatorics broadly is a branch of mathematics whose primary concern is the utilization of certain methodological processes as a means to count, and to extrapolate results from a finite set. When narrowing in on enumerative combinatorics we use the twelvefold way, a framework for counting permutations{% sidenote 'Two' '*Permutation*: An ordinal or sequential arrangement of the components of a set.' %}, combinations {% sidenote 'Three' '*Combination*: The arrangement of a set without reference to the order of the components.' %} and partitions. We will use this use this to define the range of possible combinations in the Powerball lottery.
+This expression can be mathematically articulated using enumerative combinatorics. Combinatorics broadly is a branch of mathematics whose primary concern is the utilization of certain methodological processes as a means to count, and to extrapolate results from a finite set. When narrowing in on enumerative combinatorics we use the twelvefold way, a framework for counting permutations{% sidenote 'Two' '*Permutation*: An ordinal or sequential arrangement of the components of a set.' %}, combinations {% sidenote 'Three' '*Combination*: The arrangement of a set without reference to the order of the components.' %} and partitions. We will use this use this to define the range of possible combinations in the Powerball lottery.
 
-We can think of the range of possible numbers to be drawn as an immutable set *S* of integers whose bounds are defined in the aforementioned *FirstPool* definition. A k-combination is a finite portion of set *S* with *k* number of distinct elements. If the range of the set is known number *n* is the inclusive maximum element. For the Powerball's *FirstPool* we can define *n* as equal to 69, and *k* as equal to 5. Acknowledging that factorials are computationally heavy, we will use them for simple explanation's sake. Using previously defined *n*, and *k* within equation below we will arrive at the total number of combinations including permutations within the Powerball lottery.
+We can think of the range of possible numbers to be drawn as an immutable set *S* of integers whose bounds are defined in the aforementioned *FirstPool* definition. A k-combination is a finite portion of set *S* with *k* number of distinct elements. If the range of the set is known, *n* is the inclusive maximum element.
+
+For the Powerball's *FirstPool* we can define *n* as equal to 69, and *k* as equal to 5. I will acknowledge that factorials are computationally slow, but here we will use them for simple explanation's sake. Using previously defined *n*, and *k* within equation below we will arrive at the total number of combinations including permutations within the Powerball lottery.
 
 {% math %} \frac{n!}{(n-k)!} {% endmath %}
 
@@ -59,7 +65,7 @@ Using this function we can calculate that number of possible combinations and pe
 
 {% highlight python %} binomial_coefficient(69,5,perm=True) {% endhighlight %}
 
-This leads to **1,348,621,560 combinations and permutations.** Restating once more in order to win the Powerball the order of your selection of numbers is irrelevant, and thus we can eliminate the permutations. We eliminate the permutations by multiplying the denominator by *k!*. {% sidenote 'Five' 'This is accomplished by default with the perm parameter of the binomial_coefficient function.' %}  We do this because given any set of *k* numbers there are *k!* number of ways that *k* could have been drawn. Thus, when we divide the 1,348,621,560 by *k!* we eliminate the effect of the permutations. {% sidenote 'Four' 'This factorial expression of the k-combinatorial calculation in *Eq.2* is also equivalent to the binomial coefficient. Throughout the remainder of this article we will syntactically use the binomial coefficient notation ' %}
+This leads to **1,348,621,560 combinations and permutations**. Restating once more, that in order to win a prize from the Powerball lottery the order of your selection of numbers is irrelevant, and thus we can eliminate the permutations. We eliminate the permutations by multiplying the denominator by *k!*. {% sidenote 'Five' 'This is accomplished by default with the perm parameter of the binomial_coefficient function.' %}  We do this because given any set of *k* numbers there are *k!* number of ways that *k* could have been drawn. Thus, when we divide the 1,348,621,560 by *k!* we eliminate the effect of the permutations. {% sidenote 'Four' 'This factorial expression of the k-combinatorial calculation in *Eq.2* is also equivalent to the binomial coefficient. Throughout the remainder of this article we will syntactically use the binomial coefficient notation ' %}
 
 {% math %}  \frac{n!}{k!(n-k)!} = \binom{n}{k}  {% endmath %}
 
@@ -198,7 +204,7 @@ Prior to October 7th, 2015, the Powerball lottery had the *FirstPool* ranging on
 
 ## A Quick Comparison between the to tables
 
-When running through the associated Jupyter notebook we see that the Powerball's change in pool size accomplished two things. It first improved the odds of having a winning ticket with the Powerball for tickets with 3 correct numbers or less.Secondly it decreased the odds of having a winning ticket with the Powerball for tickets with 4 or more correct numbers. For tickets without the correct Powerball the odds of winning either stayed the same or increased. This change has allowed the Powerball to increase the coverage of the lottery thus implicitly causing higher jackpot payouts.
+When running through the associated Jupyter notebook we see that the Powerball's change in pool size accomplished two things. It first improved the odds of having a winning ticket with the Powerball for tickets with 3 correct numbers or less. Secondly it decreased the odds of having a winning ticket with the Powerball for tickets with 4 or more correct numbers. For tickets without the correct Powerball the odds of winning either stayed the same or increased. This change has allowed the Powerball to increase the coverage of the lottery thus implicitly causing higher jackpot payouts.
 
 ## Conclusion
 

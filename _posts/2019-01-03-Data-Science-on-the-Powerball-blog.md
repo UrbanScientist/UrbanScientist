@@ -6,26 +6,27 @@ categories: Machines
 
 ---
 ## Introduction
-In the previous blog post, we explored the mathematical underpinnings behind the Powerball lottery. We learned that using enumerative combinatorics in the binomial coefficient, we can calculate the number of possible combinations that exist within any given Powerball drawing. Within this next article, we will learn how to build a web scraper using Python that gathers historical winning Powerball Number combinations. <!--more--> Once we have gathered the scraped information, we will learn how to clean it and convert it into it usable Pandas DataFrame.
+In the previous blog post, we explored the mathematical underpinnings behind the Powerball lottery. We learned that using enumerative combinatorics, we can calculate the number of possible combinations that exist within any given Powerball drawing.
+
+Within this article, we will learn how to build a web scraper using Python that gathers historical winning Powerball Number combinations. <!--more--> Once we have gathered the scraped information, we will learn how to clean it and convert it into it usable Pandas DataFrame. {% sidenote 'One' 'I will be using Python 3.7 for this project. Access the associated [Jupyter Notebook]() for the project here.' %}
 
 ## Brief Web Scraping Overview
 
-A Web scraper is a program that uses the hypertext transfer protocol to request information from websites, and then saves that information for some purpose. A web scraper behaves similar to an API, in that it can be run to consistently return desired information from a website. More often than not the websites that house the information that we are interested in are not robust enough to have an API. Thus, we have to be clever as to how we extract information that we want.
+A Web scraper is a program that uses the hypertext transfer protocol to request information from websites, and then saves that information for some purpose. A web scraper behaves similar to an API, in that it can be run to consistently return desired information from a website. However, more often than not the websites that house the information that we are interested in, are not robust enough to have a need to provide an API. With this it forces us to be clever as to how we extract information that we want from the site.
 
-A rudimentary example of a web scraper is to simply copy and paste the information that we’re looking for into a program like Google sheets or Microsoft Excel. Beyond simply being tedious and time intensive, there is another reason why copying, and pasting is not an optimal web scraping process. Say for instance the information that is being scraped changes periodically. The individual who is doing the copying and pasting would have to iteratively go back and copy and paste the new information each time a change occurred. In this article we will build and implement a web scraper using Python. It will allow us to iteratively and consistently collect the information that we’re looking for each time we use it.
+An example of a rudimentary web scraper is to copy and paste the information that we’re looking for, from the site, into a program like Google Sheets or Microsoft Excel. Beyond being tedious and time intensive, there is another reason why copying and pasting is not an optimal web scraping process. Say for instance the information that is being scraped changes periodically. The individual who is doing the copying and pasting would have to iteratively go back and copy and paste the new information each time a change occurred. In this article we will build and implement a web scraper using Python. It will allow us to iteratively and consistently collect the information that we’re looking for each time we use it.
 
 ### Legality of Web Scrapers
 
-Using this point here in the article I do want to say that there is a matter of legality associated with web scrapers. One, the way that web scrapers are built they can iteratively make thousands of HTTP get requests from sites in a very short amount time. This when done improperly can send large unexpected traffic loads to server hosting website potentially cause the site to go down. Two, if the site explicitly states within their terms of service (ToS) or within their prohibited operations page, that automated data collection is not allowed, then don’t do it.
+Using this point here in the article I do want to say that there is a matter of legality associated with web scrapers. One, the way that web scrapers are built they can iteratively make thousands of HTTP GET requests from sites in a very short amount time. This when done improperly can send large unexpected traffic loads to server hosting website potentially cause the site to go down. Two, if the site explicitly states within their terms of service (ToS) or within their prohibited operations page, that automated data collection is not allowed, then don’t do it.
 
-A great way to check the sites rules on web scraping is to look for a page called robots.txt. On most sites this file denotes what is and is not allowed for robots to crawl. This article we will be using the Wisconsin lottery’s website to collect historical Powerball winning ticket combinations. Going to [Wisconson Lottery’s Robots.txt File](https://www.wilottery.com/robots.txt), we see that there are only two disallowed processes for web scrapers. Luckily, we will be scraping neither of these sections of the site.
+A great way to check the sites rules on web scraping is to look for a page called robots.txt. On most sites this file denotes what is and is not allowed for web scrapers (i.e. robots) to crawl/scrape. This article we will be using the Wisconsin lottery’s website to collect historical Powerball winning ticket combinations. Going to [Wisconson Lottery’s Robots.txt File](https://www.wilottery.com/robots.txt), we see that there are only two disallowed processes for web scrapers. Luckily, we will be scraping neither of these sections of the site.
 
 ### How Web Scrapers Work
 
 There are three primary components of any web scraper. The first component of any web scraper gives it the ability to parse the HTML of a given website. The second component searches over the HTML and gathers the information of interest. Within our web scraper we will define a function called *parse_and_gather()*  that does both of these processes automatically for us.
 
 Once the web scraper has parsed the HTML and gathered the pertinent information, it is up to the developer to decide what the most applicable format to convert the data to. Thus, the final component have any web scraper formats together data into the appropriate format. In our case, we will write another function called *build_dataframe()*, that takes the gathered information and converts it into a Pandas DataFrame.
-
 
 ## Import the Necessary Packages
 
@@ -44,12 +45,13 @@ import lxml.html as lh
 
 ## Build a Header dictionary
 
+After importing the necessary Python libraries, let us begin to discuss the hypertext transfer protocol (HTTP) at a little more depth. There’re two primary actors within HTTP process. There is the client, who requests information from the server. And then there is the server which responds to the client by sending resources like HTML files and other content. HTTP was built to facilitate and set standardized guidelines to this request and response process between a client and the server. Within a client request to a server there are typically three primary components that make up a request message.
 
-After importing the necessary Python libraries let us begin to discuss the hypertext transfer protocol at a little more depth. There’re two primary actors within HTTP process. There is the client, who requests information from the server. And then there is the server which responds to the client by sending resources like HTML files and other content. HTTP was built to facilitate and set standardized guidelines to this request and response process between a client and the server. Within a client request to a server there are typically three primary components that make up a request message. The first part you have the request line otherwise known as the client request method. To get request tells the server explicitly the information that the client is requesting to be served. They are several different kinds of request methods the client can make to a server, these include GET, POST, DELETE, TRACE, CONNECT, OPTIONS, PUT, and HEAD requests. The second part of the request message we call HTTP header fields which are used to relay specific information about the client to the server. In the final component is an optional message that can be sent to the specific server from the client.
+The first part you have the request line otherwise known as the client request method. This request method tells the server explicitly the information that the client is requesting to be served. They are several different kinds of request methods the client can make to a server, these include GET, POST, DELETE, TRACE, CONNECT, OPTIONS, PUT, and HEAD requests.The second part of the request message we call HTTP header fields which are used to relay specific information about the client to the server.The final component is an optional message that can be sent to the specific server from the client.
 
 When building a web scraper, you must have the first component of a client request message to gather the information from the server. The two most common request methods that we use within our web scrapers are the GET and POST methods. GET method allows us to request a specific set of information from the server, whereas the POST method allows us to send a specific set of information to server. Within our web scraper we will use an GET method to request the relevant Powerball data from the Wisconsin lottery website.
 
-Though not a necessity is always good practice to include the second component of the client request method within your web scraper. Again, remember that the second component is the request a header. The reason why this is so crucial is because it allows the server to verify that the client requesting information is a valid client. HTTP request headers are also helpful in what’s known as content negotiation, where clients specify to the server the specific type of content that they’re requesting.
+Though not a necessity, it is always good practice to include the second component of the client request method within your web scraper. Again, remember that the second component of the request is the HTTP header. The reason why this is so crucial is because it allows the server to verify that the client requesting information is a valid client. HTTP request headers are also helpful in what’s known as content negotiation, where clients specify to the server the specific type of content that they’re requesting.
 
 For our specific case we will use a python dictionary named headers to define our HTTP request headers.
 
@@ -67,12 +69,7 @@ We have an *accept* request field that tells the server the types of media that 
 
 The next request field is the *accept-encoding* field, which defines the type of content compression that is acceptable for the server to send back to us. In our case, this request field might be slightly redundant, because the information or requesting should needs no compression. Yet, rather than taking it out I thought I’d leave it in for you to see. After we define the acceptable compression, we then define the acceptable language, if applicable, for the server to send back information in. Here we denote this field as the *accept-language* field. We tell the server to send the information back to us in English (United States or British).
 
-
-
-
 ## Build the Parse & Gather Function
-
-
 
 {% highlight python%}
 def parse_and_gather():
@@ -161,6 +158,7 @@ def build_dataframe():
     return df
 
 {% endhighlight %}
+
 ## View Output
 
 ## Conclusion
